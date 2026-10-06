@@ -1,0 +1,61 @@
+__pycache__/
+
+# ==========================================
+# Environments & Packages
+# ==========================================
+myenv/
+.venv/
+venv/
+env/
+ENV/
+build/
+dist/
+*.egg-info/
+.eggs/
+
+
+# ==========================================
+# ML Models, Weights & Checkpoints
+# ==========================================
+models/
+checkpoints/
+*.pkl
+*.pickle
+*.joblib
+*.pth
+*.pt
+*.onnx
+*.pb
+*.h5
+*.keras
+*.safetensors
+*.ckpt
+
+# ==========================================
+# Experiment Tracking & Logs
+# ==========================================
+wandb/
+mlruns/
+runs/
+lightning_logs/
+tensorboard/
+*.log
+
+# ==========================================
+# Jupyter Notebooks & IDE Settings
+# ==========================================
+.ipynb_checkpoints
+.vscode/
+.idea/
+*.swp
+*.swo
+.DS_Store
+
+# ==========================================
+# Secrets & Configurations
+# ==========================================
+.env
+.env.*
+secrets.json
+config.local.yaml
+*.pem
