@@ -1,9 +1,11 @@
 import os
+import sys
+import random
+from datetime import datetime, timedelta
 from pymongo import MongoClient
 from dotenv import load_dotenv
 from src.logger import logging
 from src.exception import CustomException
-import sys
 
 load_dotenv()
 
@@ -15,51 +17,70 @@ def seed_database():
         logging.info("Connecting to MongoDB Atlas...")
         client = MongoClient(MONGODB_URI)
         db = client[DB_NAME]
-        db.users.delete_many({})
         db.accounts.delete_many({})
         db.transactions.delete_many({})
         db.budgets.delete_many({})
 
-        user_id = "USR_101"
-        db.users.insert_one({
-            "user_id": user_id,
-            "name": "Alex Mercer",
-            "email": "alex.mercer@example.com"
-        })
-
         accounts_data = [
-            {"account_id": "ACC_001", "user_id": user_id, "type": "checking", "balance": 4500.50, "currency": "USD"},
-            {"account_id": "ACC_002", "user_id": user_id, "type": "savings", "balance": 12800.00, "currency": "USD"},
-            {"account_id": "ACC_003", "user_id": user_id, "type": "credit_card", "balance": -420.75, "currency": "USD"}
+            {"accountId": "ACC001", "userId": "USR101", "accountType": "checking", "balance": 5200.50},
+            {"accountId": "ACC002", "userId": "USR101", "accountType": "savings", "balance": 18500.00},
+            {"accountId": "ACC003", "userId": "USR101", "accountType": "credit", "balance": 1200.00}
         ]
         db.accounts.insert_many(accounts_data)
-        transactions_data = [
-            {"txn_id": "TXN_1001", "user_id": user_id, "account_id": "ACC_001", "amount": 12.50, "category": "Food", "merchant": "Starbucks", "date": "2026-10-01"},
-            {"txn_id": "TXN_1002", "user_id": user_id, "account_id": "ACC_001", "amount": 85.20, "category": "Groceries", "merchant": "Trader Joe's", "date": "2026-10-02"},
-            {"txn_id": "TXN_1003", "user_id": user_id, "account_id": "ACC_003", "amount": 45.00, "category": "Entertainment", "merchant": "Netflix", "date": "2026-10-02"},
-            {"txn_id": "TXN_1004", "user_id": user_id, "account_id": "ACC_001", "amount": 120.00, "category": "Utilities", "merchant": "Electric Co", "date": "2026-10-03"},
-            {"txn_id": "TXN_1005", "user_id": user_id, "account_id": "ACC_001", "amount": 15.00, "category": "Food", "merchant": "Chipotle", "date": "2026-10-04"},
-            {"txn_id": "TXN_1006", "user_id": user_id, "account_id": "ACC_002", "amount": 2500.00, "category": "Income", "merchant": "TechCorp Salary", "date": "2026-10-05"},
-            {"txn_id": "TXN_1007", "user_id": user_id, "account_id": "ACC_003", "amount": 60.00, "category": "Gas", "merchant": "Shell", "date": "2026-10-05"},
-            {"txn_id": "TXN_1008", "user_id": user_id, "account_id": "ACC_001", "amount": 220.00, "category": "Shopping", "merchant": "Amazon", "date": "2026-10-06"}
-        ]
-        db.transactions.insert_many(transactions_data)
 
         budgets_data = [
-            {"user_id": user_id, "category": "Food", "monthly_limit": 300.00},
-            {"user_id": user_id, "category": "Groceries", "monthly_limit": 400.00},
-            {"user_id": user_id, "category": "Entertainment", "monthly_limit": 150.00}
+            {"userId": "USR101", "category": "food", "monthlyLimit": 600.0, "month": "2026-10"},
+            {"userId": "USR101", "category": "travel", "monthlyLimit": 300.0, "month": "2026-10"},
+            {"userId": "USR101", "category": "shopping", "monthlyLimit": 400.0, "month": "2026-10"},
+            {"userId": "USR101", "category": "bills", "monthlyLimit": 800.0, "month": "2026-10"}
         ]
         db.budgets.insert_many(budgets_data)
 
-        logging.info("Database successfully seeded with collections: users, accounts, transactions, budgets.")
-        print("Database seeding complete!")
+        categories = ["food", "travel", "shopping", "bills"]
+        merchants = {
+            "food": ["Starbucks", "Chipotle", "Whole Foods", "McDonalds", "Subway"],
+            "travel": ["Uber", "Lyft", "Shell Gas", "Chevron", "Delta Air"],
+            "shopping": ["Amazon", "Target", "Walmart", "Best Buy", "Zara"],
+            "bills": ["Electric Co", "Water Dept", "Internet Provider", "Netflix", "Gym Membership"]
+        }
+        account_ids = ["ACC001", "ACC002", "ACC003"]
+        start_date = datetime(2026, 9, 1)
+
+        transactions_data = []
+        for i in range(1, 210):  
+            cat = random.choice(categories)
+            merchant = random.choice(merchants[cat])
+            txn_type = "debit" if random.random() > 0.05 else "credit" 
+            amount = round(random.uniform(5.0, 250.0), 2) if txn_type == "debit" else round(random.uniform(500.0, 2000.0), 2)
+            txn_date = (start_date + timedelta(days=random.randint(0, 35))).strftime("%Y-%m-%d")
+
+            transactions_data.append({
+                "txnId": f"TXN{i:04d}",
+                "accountId": random.choice(account_ids),
+                "amount": amount,
+                "type": txn_type,
+                "category": cat,
+                "merchant": merchant,
+                "date": txn_date
+            })
+
+        db.transactions.insert_many(transactions_data)
+
+        logging.info(f"Database successfully seeded with {len(transactions_data)} transactions.")
+        print(f"Successfully seeded database '{DB_NAME}' with {len(transactions_data)} transactions!")
 
         client.close()
 
     except Exception as e:
         logging.error("Error occurred while seeding database")
         raise CustomException(e, sys)
+
+
+
+
+
+
+
 
 if __name__ == "__main__":
     seed_database()
