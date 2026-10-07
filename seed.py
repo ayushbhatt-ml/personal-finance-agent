@@ -4,7 +4,6 @@ from datetime import datetime, timedelta
 from src.database import get_database, close_database
 from src.logger import logging
 from src.exception import MyCustomException
-import pandas
 
 def seed_database():
     try:
