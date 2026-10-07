@@ -28,7 +28,6 @@ def get_account_balances(args: dict) -> str:
 
 
 def calculate_category_spending(args: dict) -> str:
-    """Compute Tool: Aggregates spending per category inside MongoDB using $group and $sum."""
     try:
         user_id = args.get("userId")
         month = args.get("month") 
@@ -74,7 +73,6 @@ def calculate_category_spending(args: dict) -> str:
 
 
 def set_category_budget(args: dict) -> str:
-    """Write Tool: Sets or updates a monthly budget for a spending category."""
     try:
         user_id = args.get("userId")
         category = args.get("category", "").lower()
@@ -104,7 +102,6 @@ def set_category_budget(args: dict) -> str:
 
 
 def get_current_datetime(args: dict = None) -> str:
-    """Live Tool: Returns current live date and time."""
     try:
         logging.info("Executing get_current_datetime live tool")
         now = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
