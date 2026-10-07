@@ -1,61 +1,38 @@
-__pycache__/
+# Environment files (CRITICAL: Never commit real API keys!)
 
-# ==========================================
-# Environments & Packages
-# ==========================================
+.env
+.env.local
+.env.*.local
+
+# Python virtual environments
+
 myenv/
-.venv/
 venv/
-env/
 ENV/
-build/
-dist/
-*.egg-info/
-.eggs/
+env/
+.venv/
 
+# Python bytecode and cache
 
-# ==========================================
-# ML Models, Weights & Checkpoints
-# ==========================================
-models/
-checkpoints/
-*.pkl
-*.pickle
-*.joblib
-*.pth
-*.pt
-*.onnx
-*.pb
-*.h5
-*.keras
-*.safetensors
-*.ckpt
+pycache/
+*.py[cod]
+*$py.class
 
-# ==========================================
-# Experiment Tracking & Logs
-# ==========================================
-wandb/
-mlruns/
-runs/
-lightning_logs/
-tensorboard/
+# Log files and directories
+
 *.log
+logs/
 
-# ==========================================
-# Jupyter Notebooks & IDE Settings
-# ==========================================
-.ipynb_checkpoints
+# IDE and Editor settings
+
 .vscode/
 .idea/
 *.swp
 *.swo
-.DS_Store
 
-# ==========================================
-# Secrets & Configurations
-# ==========================================
-.env
-.env.*
-secrets.json
-config.local.yaml
-*.pem
+# Build and egg-info metadata
+
+build/
+dist/
+*.egg-info/
+*.egg
