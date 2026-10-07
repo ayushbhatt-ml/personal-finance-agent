@@ -3,7 +3,7 @@ import json
 from datetime import datetime
 from src.database import get_database
 from src.logger import logging
-from src.exception import CustomException
+from src.exception import MyCustomException
 
 
 def get_account_balances(args: dict) -> str:
@@ -24,7 +24,7 @@ def get_account_balances(args: dict) -> str:
         return json.dumps({"userId": user_id, "accounts": accounts})
     except Exception as e:
         logging.error(f"Error in get_account_balances: {str(e)}")
-        raise CustomException(e, sys)
+        raise MyCustomException(e, sys)
 
 
 def calculate_category_spending(args: dict) -> str:
@@ -70,7 +70,7 @@ def calculate_category_spending(args: dict) -> str:
         return json.dumps({"userId": user_id, "month": month, "spendingSummary": formatted_summary})
     except Exception as e:
         logging.error(f"Error in calculate_category_spending: {str(e)}")
-        raise CustomException(e, sys)
+        raise MyCustomException(e, sys)
 
 
 def set_category_budget(args: dict) -> str:
@@ -100,7 +100,7 @@ def set_category_budget(args: dict) -> str:
         })
     except Exception as e:
         logging.error(f"Error in set_category_budget: {str(e)}")
-        raise CustomException(e, sys)
+        raise MyCustomException(e, sys)
 
 
 def get_current_datetime(args: dict = None) -> str:
@@ -111,7 +111,7 @@ def get_current_datetime(args: dict = None) -> str:
         return json.dumps({"currentDateTime": now})
     except Exception as e:
         logging.error(f"Error in get_current_datetime: {str(e)}")
-        raise CustomException(e, sys)
+        raise MyCustomException(e, sys)
 
 TOOLS_MAP = {
     "get_account_balances": get_account_balances,

@@ -1,6 +1,7 @@
 pymongo
 python-dotenv
+groq
 
 
 
--e . 
+-e. 

@@ -1,7 +1,7 @@
 import sys
 from src.logger import logging
 
-class CustomException(Exception):
+class MyCustomException(Exception):
     def __init__(self, error_message, error_details:sys):
         self.error_message = error_message
         _,_,exc_tb = error_details.exc_info()
@@ -25,4 +25,4 @@ if __name__ == "__main__":
         a = 1/0
         print(a)
     except Exception as e:
-        raise CustomException(e,sys)
+        raise MyCustomException(e,sys)

@@ -1,22 +1,15 @@
-import os
 import sys
 import random
 from datetime import datetime, timedelta
-from pymongo import MongoClient
-from dotenv import load_dotenv
+from src.database import get_database, close_database
 from src.logger import logging
-from src.exception import CustomException
-
-load_dotenv()
-
-MONGODB_URI = os.getenv("MONGODB_URI")
-DB_NAME = os.getenv("DB_NAME", "personal_finance_db")
+from src.exception import MyCustomException
+import pandas
 
 def seed_database():
     try:
-        logging.info("Connecting to MongoDB Atlas...")
-        client = MongoClient(MONGODB_URI)
-        db = client[DB_NAME]
+        logging.info("Starting database seeding process...")
+        db = get_database()
         db.accounts.delete_many({})
         db.transactions.delete_many({})
         db.budgets.delete_many({})
@@ -47,16 +40,17 @@ def seed_database():
         start_date = datetime(2026, 9, 1)
 
         transactions_data = []
-        for i in range(1, 210):  
+        for i in range(1, 215):
             cat = random.choice(categories)
             merchant = random.choice(merchants[cat])
-            txn_type = "debit" if random.random() > 0.05 else "credit" 
-            amount = round(random.uniform(5.0, 250.0), 2) if txn_type == "debit" else round(random.uniform(500.0, 2000.0), 2)
+            txn_type = "debit" if random.random() > 0.08 else "credit"
+            amount = round(random.uniform(5.0, 250.0), 2) if txn_type == "debit" else round(random.uniform(500.0, 1500.0), 2)
             txn_date = (start_date + timedelta(days=random.randint(0, 35))).strftime("%Y-%m-%d")
 
             transactions_data.append({
                 "txnId": f"TXN{i:04d}",
                 "accountId": random.choice(account_ids),
+                "userId": "USR101",
                 "amount": amount,
                 "type": txn_type,
                 "category": cat,
@@ -65,22 +59,16 @@ def seed_database():
             })
 
         db.transactions.insert_many(transactions_data)
+        # transactions_data.to_csv('transcation_data.csv')
 
         logging.info(f"Database successfully seeded with {len(transactions_data)} transactions.")
-        print(f"Successfully seeded database '{DB_NAME}' with {len(transactions_data)} transactions!")
-
-        client.close()
+        print(f"Successfully seeded database with {len(transactions_data)} transactions!")
 
     except Exception as e:
         logging.error("Error occurred while seeding database")
-        raise CustomException(e, sys)
-
-
-
-
-
-
-
+        raise MyCustomException(e, sys)
+    finally:
+        close_database()
 
 if __name__ == "__main__":
     seed_database()
